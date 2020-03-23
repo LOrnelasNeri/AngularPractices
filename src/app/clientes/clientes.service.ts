@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Cliente, Grupo } from './cliente.model';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +10,7 @@ export class ClientesService {
 
   private clientes: Cliente[];
   private grupos: Grupo[];
+  private clientes$ = new Subject<Cliente[]>();
 
   constructor() {
     this.grupos = [
@@ -35,12 +38,17 @@ export class ClientesService {
     return this.grupos;
   }
 
-  getClientes() {
+  /*getClientes() {
     return this.clientes;
-  }
+  }*/
 
   agregarCliente(cliente: Cliente) {
     this.clientes.push(cliente);
+    this.clientes$.next(this.clientes);
+  }
+
+  getClientes$(): Observable<Cliente[]> {
+    return this.clientes$.asObservable();
   }
 
   nuevoCliente(): Cliente {
